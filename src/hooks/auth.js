@@ -79,6 +79,7 @@ export function useRegister() {
     username,
     email,
     password,
+    ngo,
     redirectTo = DASHBOARD,
   }) {
     setLoading(true);
@@ -103,6 +104,7 @@ export function useRegister() {
           username: username.toLowerCase(),
           avatar: "",
           date: Date.now(),
+          ngo: ngo,
         });
 
         toast({

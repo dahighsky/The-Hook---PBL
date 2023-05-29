@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -33,6 +34,7 @@ export default function Register() {
       username: data.username,
       email: data.email,
       password: data.password,
+      ngo: data.ngo,
       redirectTo: DASHBOARD,
     });
   }
@@ -73,6 +75,14 @@ export default function Register() {
               placeholder="password123"
               {...register("password", passwordValidate)}
             />
+            <FormErrorMessage>
+              {errors.password && errors.password.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl py="2">
+            <Checkbox {...register("ngo", { required: false })}>
+              I'm a NGO
+            </Checkbox>
             <FormErrorMessage>
               {errors.password && errors.password.message}
             </FormErrorMessage>
