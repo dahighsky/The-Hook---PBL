@@ -6,6 +6,7 @@ import {
   FaComment,
   FaRegComment,
   FaTrash,
+  FaRegUser,
 } from "react-icons/fa";
 import { useToggleLike, useDeletePost } from "hooks/posts";
 import { Link } from "react-router-dom";
@@ -13,7 +14,7 @@ import { PROTECTED } from "lib/routes";
 import { useComments } from "hooks/comments";
 
 export default function Actions({ post }) {
-  const { id, likes, uid } = post;
+  const { id, likes, uid, volunteer } = post;
   const { user, isLoading: userLoading } = useAuth();
 
   const isLiked = likes.includes(user?.id);
@@ -26,7 +27,6 @@ export default function Actions({ post }) {
   const { toggleLike, isLoading: likeLoading } = useToggleLike(config);
   const { deletePost, isLoading: deleteLoading } = useDeletePost(id);
   const { comments, isLoading: commentsLoading } = useComments(id);
-
   return (
     <Flex p="2">
       <Flex alignItems="center">
@@ -53,6 +53,18 @@ export default function Actions({ post }) {
           isRound
         />
         {comments?.length}
+      </Flex>
+      <Flex alignItems="center" ml="2">
+        <IconButton
+          isLoading={commentsLoading}
+          size="md"
+          colorScheme="teal"
+          variant="ghost"
+          icon={<FaRegUser />}
+          tootltip="Volunteers"
+          isRound
+        />
+        {volunteer?.length}
       </Flex>
 
       {!userLoading && user.id === uid && (

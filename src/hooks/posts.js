@@ -45,6 +45,33 @@ export function useAddPost() {
 
   return { addPost, isLoading };
 }
+export function useAddEvent() {
+  const [isLoading, setLoading] = useState(false);
+  const toast = useToast();
+
+  async function addEvent(post) {
+    setLoading(true);
+    const id = uuidv4();
+    await setDoc(doc(db, "posts", id), {
+      ...post,
+      id,
+      date: Date.now(),
+      likes: [],
+      event: true,
+      eventDate: post.eventDate,
+    });
+    toast({
+      title: "Post added successfully!",
+      status: "success",
+      isClosable: true,
+      position: "top",
+      duration: 5000,
+    });
+    setLoading(false);
+  }
+
+  return { addEvent, isLoading };
+}
 
 export function useToggleLike({ id, isLiked, uid }) {
   const [isLoading, setLoading] = useState(false);
@@ -59,6 +86,20 @@ export function useToggleLike({ id, isLiked, uid }) {
   }
 
   return { toggleLike, isLoading };
+}
+
+export function useVolunteer({ id, isLiked, uid }) {
+  const [isLoading, setLoading] = useState(false);
+  async function volunteer() {
+    setLoading(true);
+    const docRef = doc(db, "posts", id);
+    await updateDoc(docRef, {
+      volunteer: isLiked ? arrayRemove(uid) : arrayUnion(uid),
+    });
+    setLoading(false);
+  }
+
+  return { volunteer, isLoading };
 }
 
 export function useDeletePost(id) {
@@ -110,6 +151,26 @@ export function usePosts(uid = null) {
       )
     : query(collection(db, "posts"), orderBy("date", "desc"));
   const [posts, isLoading, error] = useCollectionData(q);
+  console.log("Posts", posts);
+  if (error) throw error;
+  return { posts, isLoading };
+}
+
+export function useEvents(uid = null) {
+  const q = uid
+    ? query(
+        collection(db, "posts"),
+        orderBy("date", "desc"),
+        where("volunteer", "array-contains", uid)
+      )
+    : query(
+        collection(db, "posts"),
+        orderBy("date", "desc"),
+        where("volunteer")
+      );
+  const [posts, isLoading, error] = useCollectionData(q);
+
+  console.log("Volunteers", posts);
   if (error) throw error;
   return { posts, isLoading };
 }
